@@ -16,18 +16,26 @@ let items = {
 }
 
 function changeItem(item, operator) {
+  let totalValue = parseInt(document.querySelector("#order-items").textContent);
   Object.keys(items).forEach(key => {
     items[key].forEach(value => {
       if (value.name == item) {
         switch (operator) {
           case "increase":
             value.quantity++;
+            totalValue++;
             break;
           case "decrease":
             value.quantity--;
-            if (value.quantity <= 0) value.quantity = 0;
+
+            if (value.quantity >= 0)
+              totalValue--;
+              else value.quantity = 0;
+            if (totalValue <= 0) totalValue= 0;
             break;
         }
+
+        document.querySelector("#order-items").textContent = totalValue.toString();
 
         const itemSelector = document.querySelector(`[data-item='${value.name}']`).parentNode.parentNode;
         itemSelector.querySelector(".cart-item__counter").textContent = value.quantity.toString();
@@ -38,6 +46,7 @@ function changeItem(item, operator) {
 
 async function populate(item, html) {
   const element = document.createElement("div");
+  element.classList.add("cart-item__wrapper");
   element.innerHTML = html;
   
   if (item.img_path != null)
@@ -47,6 +56,7 @@ async function populate(item, html) {
 
   element.querySelector(".cart-item__title-text").setAttribute("data-item", item.name);
   element.querySelector(".cart-item__title-text").textContent = item.name
+
   element.querySelector(".cart-item__counter").textContent = item.quantity.toString();
   element.querySelectorAll(".cart-item__button").forEach(btn => {
     (btn.getAttribute("data-type") == "minus")
@@ -80,5 +90,22 @@ async function createCoffeeDrops(droppers) {
   const extraDropper = extra.querySelector(".dropdown");
   
   await createCoffeeDrops([coffeeDropper, extraDropper]);
-  
+
+  // coffee.onclick = () => coffeeClick(coffee, coffeeDropper);
+  coffeeDropper.querySelector(".dropdown__close-btn")
+  .onclick = () => dropperClick(coffee, coffeeDropper)
 })();
+
+function dropperClick(parent, dropper) {
+  dropper.querySelector(".dropdown__close-btn").onclick = null;
+  dropper.style.display = "none"
+  setTimeout(() => {
+    parent.onclick = () => coffeeClick(parent, dropper);
+  }, 50);
+}
+
+function coffeeClick(parent, dropper) {
+  parent.onclick = null;
+  dropper.style.display = "block";
+  dropper.querySelector(".dropdown__close-btn").onclick = () => dropperClick(parent, dropper);
+}

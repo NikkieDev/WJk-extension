@@ -10,30 +10,38 @@
 </head>
 <body>
   <div class="order-body__wrapper">
-  <div class="order-body__child order-body__header">
-    <p>Select your items</p>
-    <span>WJK</span>
-  </div>
-  <div class="order-body__child" data-title="coffee">
-    <h4>Coffee</h4>
-    <div class="dropdown">
-      
+    <div class="order-body__child order-body__header">
+      <p>Select your items</p>
+      <span>WJK</span>
     </div>
-  </div>
-  <div class="order-body__child" data-title="extras">
-    <h4>Extra's</h4>
-    <div class="dropdown">
-      
+    <div class="order-body__child" data-title="coffee">
+      <div class="order-body__text-wrapper">
+        <h4>Coffee</h4>
+        <img src="/assets/img/arrow-down.png">
+      </div>
+      <div class="dropdown">
+        <button class="dropdown__close-btn">
+          <img src="/assets/img/close.png" alt="Close">
+        </button>
+      </div>
     </div>
-  </div>
-  <div class="order-body__child order-body__footer">
-    <p>Items:</p>
-    <span id="order-items">0</span>
-    <div class="order-interactions__wrapper">
-      <button class="order-interactions__child">Clear list</button>
-      <button class="order-interactions__child">Submit order</button>
+    <div class="order-body__child" data-title="extras">
+      <div class="order-body__text-wrapper">
+        <h4>Extra's</h4>
+        <img src="/assets/img/arrow-down.png">
+      </div>
+      <div class="dropdown">
+        
+      </div>
     </div>
-  </div>
+    <div class="order-body__child order-body__footer">
+      <p>Items:</p>
+      <span id="order-items">0</span>
+      <div class="order-interactions__wrapper">
+        <button class="order-interactions__child">Clear list</button>
+        <button class="order-interactions__child">Submit order</button>
+      </div>
+    </div>
   </div>
 </body>
 </html>

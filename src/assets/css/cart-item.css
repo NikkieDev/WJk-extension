@@ -1,23 +1,22 @@
 .cart-item__wrapper {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 1fr;
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
+  display: flex;
+  flex-direction: row;
   width: 360px;
-  background: #52edbf;
+  background: white;
+  border: rgba(0,0,0,0.1) solid 1px;
+  padding: 6px 12px;
 }
 
 .cart-item__title { 
-  grid-area: 1 / 1 / 2 / 2;
+
 }
 
 .cart-item__interaction-wrapper { 
-  grid-area: 1 / 2 / 2 / 3;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
+  margin-left: auto;
 }
 
 .cart-item__button {
