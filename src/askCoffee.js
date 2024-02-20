@@ -13,6 +13,6 @@ chrome.storage.sync.get(['username']).then(result => {
       headers: { "Content-Type": "application/json" },
       method: "POST",
       body: JSON.stringify({ "content": `<@447111749204705294> ${result.username} wil koffie!` })
-    }).catch(err => alert(`Couldn't reach SLACK api, error: ${err}`));
+    }).catch(err => alert(`Couldn't reach Discord api, error: ${err}`));
   }
 })
