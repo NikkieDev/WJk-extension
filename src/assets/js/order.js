@@ -1,3 +1,5 @@
+let prefabCache;
+
 let items = {
   coffee: [
     { id: 1, name: "Espresso", img_path: "espresso.png", quantity: 0 },
@@ -27,19 +29,24 @@ function changeItem(item, operator) {
             break;
         }
 
-        const itemSelector = document.querySelector(`[data-item='${item}']`).parentNode;
+        const itemSelector = document.querySelector(`[data-item='${value.name}']`).parentNode.parentNode;
         itemSelector.querySelector(".cart-item__counter").textContent = value.quantity.toString();
       }
     })
   });
 }
 
-async function populateCoffee(item, html) {
+async function populate(item, html) {
   const element = document.createElement("div");
   element.innerHTML = html;
   
-  element.querySelector(".cart-item__title").setAttribute("data-item", item.name);
-  element.querySelector(".cart-item__title").textContent = item.name
+  if (item.img_path != null)
+    element.querySelector(".cart-item__title-icon").setAttribute("src", `/assets/img/${item.img_path}`);
+  else
+    element.querySelector(".cart-item__title-icon").remove();
+
+  element.querySelector(".cart-item__title-text").setAttribute("data-item", item.name);
+  element.querySelector(".cart-item__title-text").textContent = item.name
   element.querySelector(".cart-item__counter").textContent = item.quantity.toString();
   element.querySelectorAll(".cart-item__button").forEach(btn => {
     (btn.getAttribute("data-type") == "minus")
@@ -50,26 +57,17 @@ async function populateCoffee(item, html) {
   return element;
 }
 
-async function populateExtra() {
-
-}
-
-async function createCoffee(coffeeDropper) {
+async function createCoffeeDrops(droppers) {
   const coffeeItemPrefab = await fetch('/assets/prefabs/cart-item.html');
-
+  
   coffeeItemPrefab.text()
   .then(html => {
-    items.coffee.forEach(async coffeeItem => {
-      populateCoffee(coffeeItem, html)
-      .then(finishedHtml => {
-        coffeeDropper.appendChild(finishedHtml);
-      })
+    prefabCache = html;
+    items.coffee.forEach(coffeeItem => {
+      populate(coffeeItem, html)
+      .then(finishedHtml => droppers[0].appendChild(finishedHtml))
     })
-  })
-}
-
-async function createExtra(extraDropper) {
-
+  });
 }
 
 (async function() { 
@@ -81,7 +79,6 @@ async function createExtra(extraDropper) {
   const coffeeDropper = coffee.querySelector(".dropdown");
   const extraDropper = extra.querySelector(".dropdown");
   
-  await createCoffee(coffeeDropper);
-  await createExtra(extraDropper);
+  await createCoffeeDrops([coffeeDropper, extraDropper]);
   
 })();

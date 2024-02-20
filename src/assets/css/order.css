@@ -89,6 +89,6 @@ body {
 }
 
 .dropdown {
-  position: absolute;
-  display: none;
+  
+  /* display: none; */
 }

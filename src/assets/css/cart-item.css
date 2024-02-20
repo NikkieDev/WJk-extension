@@ -5,6 +5,7 @@
   grid-column-gap: 0px;
   grid-row-gap: 0px;
   width: 360px;
+  background: #52edbf;
 }
 
 .cart-item__title { 
@@ -28,4 +29,16 @@
 .cart-item__button>img {
   width: inherit;
   height: inherit;
+}
+
+.cart-item__title-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cart-item__title-icon {
+  width: 24px;
+  height: 24px;
 }
