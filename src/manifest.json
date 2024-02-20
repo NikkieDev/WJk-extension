@@ -8,8 +8,5 @@
     "default_title": "Wil je koffie?",
     "default_popup": "ui/order.html"
   },
-  "permissions": ["scripting", "storage", "activeTab"],
-  "background": {
-    "service_worker": "worker.js"
-  }
+  "permissions": ["storage"]
 }

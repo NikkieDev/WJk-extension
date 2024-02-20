@@ -73,11 +73,16 @@ async function createCoffeeDrops(droppers) {
   coffeeItemPrefab.text()
   .then(html => {
     prefabCache = html;
+
     items.coffee.forEach(coffeeItem => {
       populate(coffeeItem, html)
       .then(finishedHtml => droppers[0].appendChild(finishedHtml))
+    });
+    items.extra.forEach(extraItem => {
+      populate(extraItem, html)
+      .then(finishedHtml => droppers[1].appendChild(finishedHtml));
     })
-  });
+  })
 }
 
 (async function() { 
@@ -91,21 +96,76 @@ async function createCoffeeDrops(droppers) {
   
   await createCoffeeDrops([coffeeDropper, extraDropper]);
 
-  // coffee.onclick = () => coffeeClick(coffee, coffeeDropper);
-  coffeeDropper.querySelector(".dropdown__close-btn")
-  .onclick = () => dropperClick(coffee, coffeeDropper)
+  coffee.onclick = () => coffeeClick(coffee, coffeeDropper);
+  extra.onclick = () => coffeeClick(extra, extraDropper);
+
+  document.querySelectorAll(".order-interactions__child")[0].addEventListener("click", () => clearList());
+  document.querySelectorAll(".order-interactions__child")[1].addEventListener("click", () => submitOrder());
 })();
 
 function dropperClick(parent, dropper) {
+  document.body.style.height = "100%";
   dropper.querySelector(".dropdown__close-btn").onclick = null;
   dropper.style.display = "none"
-  setTimeout(() => {
-    parent.onclick = () => coffeeClick(parent, dropper);
-  }, 50);
+  setTimeout(() => parent.onclick = () => coffeeClick(parent, dropper), 50);
 }
 
 function coffeeClick(parent, dropper) {
   parent.onclick = null;
   dropper.style.display = "block";
   dropper.querySelector(".dropdown__close-btn").onclick = () => dropperClick(parent, dropper);
+  document.body.style.height = "480px";
+}
+
+function submitOrder() {
+  console.log("Sending order!");
+
+  chrome.storage.sync.get(["username"]).then(result => {
+    if (result.username == null) {
+      let username = window.prompt("Please fill in your name first");
+
+      if (username != null)
+        chrome.storage.sync.set({ "username": username });
+    } else {
+      if (parseInt(document.querySelector("#order-items").textContent) > 0) {
+        let coffeeData = [], extraData = [];
+        console.log("Counting products");
+
+        items.coffee.forEach(coffee => {
+          if (coffee.quantity > 0)
+            coffeeData.push(`${coffee.name} x${coffee.quantity}`);
+        })
+
+        items.extra.forEach(extra => {
+          if (extra.quantity > 0)
+            extraData.push(`${extra.name} x${extra.quantity}`);
+        });
+
+        if (coffeeData.length > 0 || extraData.length > 0) {
+          console.log("Sending order");
+          alert("Sending order");
+          fetch("https://hooks.slack.com/services/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",
+          {
+            headers: { "Content-Type": "application/json" },
+            method: "POST",
+            body: JSON.stringify({
+              "text": `<@447111749204705294> ${result.username} will: \n
+              ${(coffeeData.length > 0) ? ("Coffee: " + coffeeData.join("\n") + "\n\n") : ""}
+              ${(extraData.length > 0) ? ("Extra: " + extraData.join("\n") + "\n\n") : ""}`
+            }),
+          }).catch(err => alert(`Couldn't reach SLACK API, ${err}`));
+        }
+
+        window.close();
+      }
+    }
+  })
+}
+
+function clearList() {
+  console.log("Clearing order");
+
+  Object.keys(items).forEach(item => items[item].forEach(cartItem => cartItem.quantity = 0));
+  document.querySelectorAll(".cart-item__counter").forEach(cartItem => cartItem.textContent = "0");
+  document.querySelector("#order-items").textContent = "0";
 }
