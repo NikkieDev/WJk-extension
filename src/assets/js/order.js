@@ -132,7 +132,7 @@
       } else {
           try {
             if (parseInt(document.querySelector("#order-items").textContent) > 0) {
-              let coffeeData = [], extraData = [];
+              let coffeeData = [], extraData = [], coldData = [];
               console.log("Counting products");
       
               items.coffee.forEach(coffee => {
@@ -144,8 +144,13 @@
                 if (extra.quantity > 0)
                   extraData.push(`${extra.name} x${extra.quantity}`);
               });
+
+              items.cold.forEach(cold => {
+                if (cold.quantity > 0)
+                  coldData.push(`${cold.name} x${cold.quantity}`);
+              })
       
-              if (coffeeData.length > 0 || extraData.length > 0) {
+              if (coffeeData.length > 0 || extraData.length > 0 || coldData.length > 0) {
                 console.log("Sending order");
                 await fetch("http://localhost:8080/coffee/order",
                 {
@@ -153,6 +158,7 @@
                     "Content-Type": "application/json",
                     "coffeeData": coffeeData,
                     "extraData": extraData,
+                    "coldData": coldData,
                     "username": result.username
                   },
                   method: "GET",

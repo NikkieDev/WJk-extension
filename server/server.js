@@ -18,13 +18,14 @@ app.get("/coffee/list", async (req, res) => {
 app.get('/coffee/order', (req, res) => {
   const coffeeData = req.headers["coffeedata"];
   const extraData = req.headers["extradata"];
+  const coldData = req.headers["colddata"];
 
-  if (coffeeData == undefined || extraData == undefined || req.headers["username"] == undefined) {
+  if (coffeeData == undefined || extraData == undefined || req.headers["username"] == undefined || coldData == undefined) {
     res.status(400).json({success: false});
     return;
   }
 
-  console.log(`Received order: ${coffeeData}\n${extraData}`)
+  console.log(`Received order: ${coffeeData}\n${extraData}\n${coldData}`)
   fetch(process.env.SLACK_HOOK,
   {
     headers: { "Content-Type": "application/json" },
@@ -32,7 +33,8 @@ app.get('/coffee/order', (req, res) => {
     body: JSON.stringify({
       "text": `${req.headers.username} will: \n
       ${(coffeeData.length > 0) ? `Coffee: ${coffeeData}` : ""}
-      ${(extraData.length > 0) ? `Extra: ${extraData}` : ""}`
+      ${(extraData.length > 0) ? `Extra: ${extraData}` : ""}
+      ${(coldData.length > 0) ? `Cold: ${coldData}` : ""}`
     }),
   }).then(console.log("Send to slack!")).catch(err => console.log(err));
   res.status(200).json({ success: true });
