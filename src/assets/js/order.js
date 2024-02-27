@@ -134,7 +134,7 @@
             if (parseInt(document.querySelector("#order-items").textContent) > 0) {
               let coffeeData = [], extraData = [], coldData = [];
               console.log("Counting products");
-      
+
               items.coffee.forEach(coffee => {
                 if (coffee.quantity > 0)
                   coffeeData.push(`${coffee.name} x${coffee.quantity}`);
