@@ -1,12 +1,21 @@
 const express = require('express');
+const fs = require('fs');
 const cors = require('cors');
 const app = express();
 
 app.use(express.json({extended: true}));
 app.use(cors());
 
-app.get('/order/coffee', (req, res) => {
-  console.log("reached!");
+app.get("/coffee/list", async (req, res) => {  
+  const stockFile = await fs.readFileSync("./data/stock.json");
+  const stock = JSON.parse(stockFile);
+  
+  res.status(200).json({ success: true, message: JSON.stringify(stock) });
+
+  return;
+});
+
+app.get('/coffee/order', (req, res) => {
   const coffeeData = req.headers["coffeedata"];
   const extraData = req.headers["extradata"];
 
@@ -15,8 +24,8 @@ app.get('/order/coffee', (req, res) => {
     return;
   }
 
-  console.log(`request: ${coffeeData}\n${extraData}`)
-  fetch("",
+  console.log(`Received order: ${coffeeData}\n${extraData}`)
+  fetch(process.env.SLACK_HOOK,
   {
     headers: { "Content-Type": "application/json" },
     method: "POST",
@@ -27,6 +36,8 @@ app.get('/order/coffee', (req, res) => {
     }),
   }).then(console.log("Send to slack!")).catch(err => console.log(err));
   res.status(200).json({ success: true });
+
+  return
 })
 
 app.listen(8080);
