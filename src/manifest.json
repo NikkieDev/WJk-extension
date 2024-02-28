@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Wil je koffie?",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "Press the button in the topright of your browser, to ask for koffie.",
   "author": "Nikkie Schaad | Wiljekoffie Intern",
   "action": {

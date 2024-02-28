@@ -3,7 +3,7 @@
   let prefabCache;
   let items;
 
-  fetch("http://localhost:8080/coffee/list")
+  fetch("http://wj-koffie.eu:8080/coffee/list")
   .then(r => r.json()).then(async r => {
     items = JSON.parse(r["message"]);
     await initialize();
@@ -123,12 +123,18 @@
   async function submitOrder() {
     console.log("Sending order!");
 
-    chrome.storage.sync.get(["username"]).then(async result => {
+    chrome.storage.sync.get(["username", "luxafor_id"]).then(async result => {
       if (result.username == null) {
         let username = window.prompt("Please fill in your name first");
 
         if (username != null)
           chrome.storage.sync.set({ "username": username });
+      } else if (result.luxafor_id == null) {
+        let newLuxaforId = window.prompt("Please fill in your luxafor flag ID");
+
+        if (newLuxaforId != null)
+          chrome.storage.sync.set({ "luxafor_id": newLuxaforId});
+
       } else {
           try {
             if (parseInt(document.querySelector("#order-items").textContent) > 0) {
@@ -152,14 +158,15 @@
       
               if (coffeeData.length > 0 || extraData.length > 0 || coldData.length > 0) {
                 console.log("Sending order");
-                await fetch("http://localhost:8080/coffee/order",
+                await fetch("http://wj-koffie.eu:8080/coffee/order",
                 {
                   headers: {
                     "Content-Type": "application/json",
                     "coffeeData": coffeeData,
                     "extraData": extraData,
                     "coldData": coldData,
-                    "username": result.username
+                    "username": result.username,
+                    "luxaforid": result.luxafor_id
                   },
                   method: "GET",
                 }).catch(err => alert(`Couldn't reach API, ${err}`));
